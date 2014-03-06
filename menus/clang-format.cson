@@ -3,7 +3,7 @@
   {
     'label': 'Packages'
     'submenu': [
-      'label': 'Clang'
+      'label': 'Clang Format'
       'submenu': [
         { 'label': 'Format', 'command': 'clang-format:format' }
       ]
