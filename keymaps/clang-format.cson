@@ -1,0 +1,2 @@
+'.editor':
+  'cmd-shift-k': 'clang-format:format'
