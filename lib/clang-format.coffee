@@ -1,25 +1,21 @@
 exec = require('child_process').exec
 
 module.exports =
-  configDefaults:
-    executable: 'clang-format'
-    formatOnSave: true
-
-  activate: (state) ->
+class ClangFormat
+  constructor: (state) ->
     atom.project.eachEditor (editor) =>
-      @attachEditor(editor)
+      @handleBufferEvents(editor)
 
     atom.workspaceView.command 'clang-format:format', =>
       editor = atom.workspace.getActiveEditor()
       if editor
         @format(editor)
 
-  deactivate: ->
+  destroy: ->
     atom.unsubscribe(atom.project)
 
-  attachEditor: (editor) ->
+  handleBufferEvents: (editor) ->
     buffer = editor.getBuffer()
-
     atom.subscribe buffer, 'reloaded will-be-saved', =>
       scope = editor.getCursorScopes()[0]
       if atom.config.get('clang-format.formatOnSave') and scope is 'source.c++'
@@ -30,8 +26,10 @@ module.exports =
 
   format: (editor) ->
     if editor and editor.getPath()
-      cmd = atom.config.get('clang-format.executable')
-      exec cmd + ' -style file ' + editor.getPath(), (err, stdout, stderr) ->
+      exe = atom.config.get('clang-format.executable')
+      style = atom.config.get('clang-format.style')
+      path = editor.getPath()
+      exec exe + ' -style ' + style + ' ' + path, (err, stdout, stderr) ->
         if err
           console.log(err)
         else

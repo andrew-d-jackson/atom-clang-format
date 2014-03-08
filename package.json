@@ -1,9 +1,9 @@
 {
   "name": "clang-format",
-  "main": "./lib/clang-format",
-  "version": "0.4.0",
+  "main": "./lib/main",
+  "version": "0.5.0",
   "private": true,
-  "description": "Automatically runs clang-format on c++ source files when saved.",
+  "description": "Format your C++ files with clang-format from inside atom.",
   "repository": "https://github.com/LiquidHelium/atom-clang-format",
   "license": "MIT"
 }
