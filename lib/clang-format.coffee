@@ -29,7 +29,7 @@ class ClangFormat
       exe = atom.config.get('clang-format.executable')
       style = atom.config.get('clang-format.style')
       path = editor.getPath()
-      exec exe + ' -style ' + style + ' ' + path, (err, stdout, stderr) ->
+      exec exe + ' -style ' + style + ' "' + path + '"', (err, stdout, stderr) ->
         if err
           console.log(err)
         else
