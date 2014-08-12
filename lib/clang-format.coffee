@@ -16,7 +16,7 @@ class ClangFormat
 
   handleBufferEvents: (editor) ->
     buffer = editor.getBuffer()
-    atom.subscribe buffer, 'reloaded will-be-saved', =>
+    atom.subscribe buffer, 'saved', =>
       scope = editor.getCursorScopes()[0]
       if atom.config.get('clang-format.formatOnSave') and scope is 'source.c++'
         @format(editor)
@@ -29,40 +29,48 @@ class ClangFormat
       exe = atom.config.get('clang-format.executable')
       style = atom.config.get('clang-format.style')
       path = editor.getPath()
-      exec exe + ' -style ' + style + ' "' + path + '"', (err, stdout, stderr) ->
+      cursor = @getCurrentCursorPosition(editor)
+      exec exe + ' -cursor=' + cursor.toString() + ' -style ' + style + ' "' + path + '"', (err, stdout, stderr) =>
         if err
           console.log(err)
+          console.log(stdout)
+          console.log(stderr)
         else
-          cursorpos = editor.getCursorBufferPosition()
-          textUptoPos = editor.getText(new Range(new Point(0, 0), cursorpos))
-          charAmount = getAmountOfChars(textUptoPos)
+          editor.setText(@getReturnedFormattedText(stdout))
+          returnedCursorPos = @getReturnedCursorPosition(stdout)
+          convertedCursorPos = @convertReturnedCursorPosition(editor, returnedCursorPos)
+          editor.setCursorScreenPosition(convertedCursorPos)
 
-          editor.setText(stdout)
+  getEndJSONPosition: (text) ->
+    for i in [0..(text.length-1)]
+      if text[i] is '\n' or text[i] is '\r'
+        return i+1
+    return -1
 
-          newPos = getPosFromAmount(charAmount, editor.getText())
-          editor.setCursorBufferPosition(newPos)
+  getReturnedCursorPosition: (stdout) ->
+    parsed = JSON.parse stdout.slice(0, @getEndJSONPosition(stdout))
+    return parsed.Cursor
 
-  getAmountOfChars: (text) ->
-    count = 0
-    for i in [0..text.length]
-      if i isnt '\n' and i isnt ' ' and i isnt '\t'  and i isnt '\r'
-        count++
-    return count
+  getReturnedFormattedText: (stdout) ->
+    return stdout.slice(@getEndJSONPosition(stdout))
 
-  getPosFromAmount: (amount, text) ->
-    x = 0
-    y = 0
-    count = amount
-    for i in [0..text.length]
-      if i is '\n' or i is '\r'
+  getCurrentCursorPosition: (editor) ->
+    cursorPosition = editor.getCursorBufferPosition()
+    text = editor.getTextInBufferRange([[0, 0], cursorPosition])
+    return text.length
+
+  convertReturnedCursorPosition: (editor, position) ->
+    text = editor.getText()
+    x = y = 0
+
+    for i in [0..(text.length-1)]
+      if position is 0
+        return [y, x]
+      else if text[i] is '\n' or text[i] is '\r' or text[i] is '\f'
         x = 0
         y++
-      else if i isnt ' ' and i isnt '\t'
-        count--
-        x++
       else
         x++
+      position--
 
-      if count is 0
-        return new Point(x, y)
-    return new Point(x, y)
+    return [y, x]
