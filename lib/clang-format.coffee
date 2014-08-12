@@ -34,5 +34,35 @@ class ClangFormat
           console.log(err)
         else
           cursorpos = editor.getCursorBufferPosition()
+          textUptoPos = editor.getText(new Range(new Point(0, 0), cursorpos))
+          charAmount = getAmountOfChars(textUptoPos)
+
           editor.setText(stdout)
-          editor.setCursorBufferPosition(cursorpos)
+
+          newPos = getPosFromAmount(charAmount, editor.getText())
+          editor.setCursorBufferPosition(newPos)
+
+  getAmountOfChars: (text) ->
+    count = 0
+    for i in [0..text.length]
+      if i isnt '\n' and i isnt ' ' and i isnt '\t'  and i isnt '\r'
+        count++
+    return count
+
+  getPosFromAmount: (amount, text) ->
+    x = 0
+    y = 0
+    count = amount
+    for i in [0..text.length]
+      if i is '\n' or i is '\r'
+        x = 0
+        y++
+      else if i isnt ' ' and i isnt '\t'
+        count--
+        x++
+      else
+        x++
+
+      if count is 0
+        return new Point(x, y)
+    return new Point(x, y)
