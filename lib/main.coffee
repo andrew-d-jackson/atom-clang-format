@@ -2,8 +2,8 @@ ClangFormat = require './clang-format'
 
 module.exports =
   configDefaults:
-    executable: 'clang-format'
     formatOnSave: true
+    executable: 'clang-format'
     style: 'file'
 
   activate: ->
