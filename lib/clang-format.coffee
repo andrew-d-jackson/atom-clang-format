@@ -3,7 +3,7 @@ exec = require('child_process').exec
 module.exports =
 class ClangFormat
   constructor: (state) ->
-    atom.project.eachEditor (editor) =>
+    atom.workspace.eachEditor (editor) =>
       @handleBufferEvents(editor)
 
     atom.workspaceView.command 'clang-format:format', =>
