@@ -39,7 +39,7 @@ class ClangFormat
           editor.setText(@getReturnedFormattedText(stdout))
           returnedCursorPos = @getReturnedCursorPosition(stdout)
           convertedCursorPos = @convertReturnedCursorPosition(editor, returnedCursorPos)
-          editor.setCursorScreenPosition(convertedCursorPos)
+          editor.setCursorBufferPosition(convertedCursorPos)
 
   getEndJSONPosition: (text) ->
     for i in [0..(text.length-1)]
