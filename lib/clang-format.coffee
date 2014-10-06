@@ -24,7 +24,10 @@ class ClangFormat
       exe = atom.config.get('clang-format.executable')
       style = atom.config.get('clang-format.style')
       cursor = buffer.characterIndexForPosition(editor.getCursorBufferPosition())
-      child = exec exe + ' -cursor=' + cursor.toString() + ' -style ' + style, (err, stdout, stderr) =>
+      cmd = exe + ' -cursor=' + cursor.toString() + ' -style ' + style
+      if editor.getPath()
+        cmd += ' -assume-filename=' + editor.getPath()
+      child = exec cmd, (err, stdout, stderr) =>
         if err
           console.log(err)
           console.log(stdout)
