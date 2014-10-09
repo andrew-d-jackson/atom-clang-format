@@ -1,3 +1,2 @@
 '.editor':
   'cmd-shift-k': 'clang-format:format'
-  'ctrl-s': 'clang-format:format-and-save'

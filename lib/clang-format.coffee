@@ -8,15 +8,13 @@ class ClangFormat
       if editor
         @format(editor)
 
-    atom.workspaceView.command 'clang-format:format-and-save', (e) =>
+    atom.workspaceView.command 'core:save', (e) =>
       editor = atom.workspace.getActiveEditor()
       if editor
         scope = editor.getCursorScopes()[0]
         if atom.config.get('clang-format.formatOnSave') and scope is 'source.c++'
-          @format editor, =>
+          @format editor, ->
             editor.save()
-        else
-          e.abortKeyBinding()
 
   format: (editor, onDone) ->
     if editor
