@@ -18,7 +18,7 @@ class ClangFormat
     buffer = editor.getBuffer()
     atom.subscribe buffer, 'saved', =>
       scope = editor.getCursorScopes()[0]
-      if atom.config.get('clang-format.formatOnSave') and scope is 'source.c++'
+      if atom.config.get('clang-format.formatOnSave') and scope in ['source.c++', 'source.cpp']
         @format(editor)
 
     atom.subscribe buffer, 'destroyed', ->
