@@ -30,7 +30,11 @@ class ClangFormat
       style = atom.config.get('clang-format.style')
       path = editor.getPath()
       cursor = @getCurrentCursorPosition(editor)
-      exec exe + ' -cursor=' + cursor.toString() + ' -style ' + style + ' "' + path + '"', (err, stdout, stderr) =>
+      command = exe + ' -cursor=' + cursor.toString() +
+                ' -style=' + style +
+                ' -lines=' + @getTargetLineNums(editor)
+
+      child = exec command, (err, stdout, stderr) =>
         if err
           console.log(err)
           console.log(stdout)
@@ -40,6 +44,9 @@ class ClangFormat
           returnedCursorPos = @getReturnedCursorPosition(stdout)
           convertedCursorPos = @convertReturnedCursorPosition(editor, returnedCursorPos)
           editor.setCursorBufferPosition(convertedCursorPos)
+
+      child.stdin.write(editor.getText())
+      child.stdin.end()
 
   getEndJSONPosition: (text) ->
     for i in [0..(text.length-1)]
@@ -58,6 +65,33 @@ class ClangFormat
     cursorPosition = editor.getCursorBufferPosition()
     text = editor.getTextInBufferRange([[0, 0], cursorPosition])
     return text.length
+
+  getCursorLineNumber: (editor) ->
+    cursorPosition = editor.getCursorBufferPosition()
+    # +1 to get 1-base line number.
+    return cursorPosition.toArray()[0] + 1
+
+  textSelected: (editor) ->
+    range = editor.getSelectedBufferRange()
+    return !range.isEmpty()
+
+  getSelectedLineNums: (editor) ->
+    range = editor.getSelectedBufferRange()
+    rows = range.getRows()
+    # + 1 to get 1-base line number.
+    starting_row = rows[0] + 1
+    # If 2 lines are selected, the diff between |starting_row| is 1, so -1.
+    ending_row = starting_row + range.getRowCount() - 1
+    return [starting_row, ending_row]
+
+  # Returns line numbers recognizable by clang-format, i.e. '<begin>:<end>'.
+  getTargetLineNums: (editor) ->
+    if (@textSelected(editor))
+      line_nums = @getSelectedLineNums(editor)
+      return line_nums[0] + ':' + line_nums[1]
+
+    line_num = @getCursorLineNumber(editor)
+    return line_num + ':' + line_num
 
   convertReturnedCursorPosition: (editor, position) ->
     text = editor.getText()
