@@ -1,4 +1,5 @@
 exec = require('child_process').exec
+path = require('path')
 
 module.exports =
 class ClangFormat
@@ -28,13 +29,14 @@ class ClangFormat
     if editor and editor.getPath()
       exe = atom.config.get('clang-format.executable')
       style = atom.config.get('clang-format.style')
-      path = editor.getPath()
       cursor = @getCurrentCursorPosition(editor)
       command = exe + ' -cursor=' + cursor.toString() +
                 ' -style=' + style +
                 ' -lines=' + @getTargetLineNums(editor)
 
-      child = exec command, (err, stdout, stderr) =>
+      file_path = editor.getPath()
+      working_dir = path.dirname(file_path)
+      child = exec command, {cwd: working_dir}, (err, stdout, stderr) =>
         if err
           console.log(err)
           console.log(stdout)
