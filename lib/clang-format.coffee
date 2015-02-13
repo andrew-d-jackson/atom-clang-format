@@ -7,12 +7,14 @@ class ClangFormat
     atom.workspace.eachEditor (editor) =>
       @handleBufferEvents(editor)
 
-    atom.workspaceView.command 'clang-format:format', =>
-      editor = atom.workspace.getActiveEditor()
-      if editor
-        @format(editor)
+    @commands = atom.commands.add 'atom-workspace',
+     'clang-format:format', =>
+        editor = atom.workspace.getActiveEditor()
+        if editor
+          @format(editor)
 
   destroy: ->
+    @commands.dispose()
     atom.unsubscribe(atom.project)
 
   handleBufferEvents: (editor) ->
