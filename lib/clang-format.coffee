@@ -4,12 +4,12 @@ path = require('path')
 module.exports =
 class ClangFormat
   constructor: (state) ->
-    atom.workspace.eachEditor (editor) =>
+    atom.workspace.observeTextEditors (editor) =>
       @handleBufferEvents(editor)
 
     @commands = atom.commands.add 'atom-workspace',
      'clang-format:format', =>
-        editor = atom.workspace.getActiveEditor()
+        editor = atom.workspace.getActiveTextEditor()
         if editor
           @format(editor)
 
@@ -19,12 +19,12 @@ class ClangFormat
 
   handleBufferEvents: (editor) ->
     buffer = editor.getBuffer()
-    atom.subscribe buffer, 'saved', =>
-      scope = editor.getCursorScopes()[0]
+    buffer.onDidSave =>
+      scope = editor.getLastCursor().getScopeDescriptor().scopes[0]
       if atom.config.get('clang-format.formatOnSave') and scope in ['source.c++', 'source.cpp']
         @format(editor)
 
-    atom.subscribe buffer, 'destroyed', ->
+    buffer.onDidDestroy ->
       atom.unsubscribe(editor.getBuffer())
 
   format: (editor) ->
@@ -32,9 +32,12 @@ class ClangFormat
       exe = atom.config.get('clang-format.executable')
       style = atom.config.get('clang-format.style')
       cursor = @getCurrentCursorPosition(editor)
+
       command = exe + ' -cursor=' + cursor.toString() +
-                ' -style=' + style +
-                ' -lines=' + @getTargetLineNums(editor)
+                       ' -style=' + style
+
+      if (@textSelected(editor))
+        command += ' -lines=' + @getTargetLineNums(editor)
 
       file_path = editor.getPath()
       working_dir = path.dirname(file_path)
@@ -46,7 +49,7 @@ class ClangFormat
         else
           editor.setText(@getReturnedFormattedText(stdout))
           returnedCursorPos = @getReturnedCursorPosition(stdout)
-          convertedCursorPos = @convertReturnedCursorPosition(editor, returnedCursorPos)
+          convertedCursorPos = editor.getBuffer().positionForCharacterIndex(returnedCursorPos)
           editor.setCursorBufferPosition(convertedCursorPos)
 
       child.stdin.write(editor.getText())
@@ -96,19 +99,3 @@ class ClangFormat
 
     line_num = @getCursorLineNumber(editor)
     return line_num + ':' + line_num
-
-  convertReturnedCursorPosition: (editor, position) ->
-    text = editor.getText()
-    x = y = 0
-
-    for i in [0..(text.length-1)]
-      if position is 0
-        return [y, x]
-      else if text[i] is '\n' or text[i] is '\r' or text[i] is '\f'
-        x = 0
-        y++
-      else
-        x++
-      position--
-
-    return [y, x]
