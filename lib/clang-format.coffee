@@ -18,14 +18,11 @@ class ClangFormat
     atom.unsubscribe(atom.project)
 
   handleBufferEvents: (editor) ->
-    buffer = editor.getBuffer()
-    buffer.onDidSave =>
+    editor.onDidSave =>
       scope = editor.getRootScopeDescriptor().scopes[0]
       if atom.config.get('clang-format.formatOnSave') and scope in ['source.c++', 'source.cpp']
         @format(editor)
 
-    buffer.onDidDestroy ->
-      atom.unsubscribe(editor.getBuffer())
 
   format: (editor) ->
     if editor and editor.getPath()
