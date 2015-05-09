@@ -2,9 +2,17 @@ ClangFormat = require './clang-format'
 
 module.exports =
   config:
-    formatOnSave:
-      type: 'boolean'
-      default: true
+    formatOnSaveScopes:
+      type: 'array'
+      item:
+        type: 'string'
+      default: [
+        'source.c'
+        'source.c++'
+        'source.cpp'
+        'source.objc'
+        'source.objcpp'
+      ]
     executable:
       type: 'string'
       default: 'clang-format'

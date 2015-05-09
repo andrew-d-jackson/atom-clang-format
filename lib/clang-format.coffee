@@ -20,7 +20,7 @@ class ClangFormat
   handleBufferEvents: (editor) ->
     editor.onDidSave =>
       scope = editor.getRootScopeDescriptor().scopes[0]
-      if atom.config.get('clang-format.formatOnSave') and scope in ['source.c++', 'source.cpp']
+      if scope in atom.config.get('clang-format.formatOnSaveScopes')
         @format(editor)
 
 
