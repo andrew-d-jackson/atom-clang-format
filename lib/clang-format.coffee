@@ -20,7 +20,6 @@ class ClangFormat
   handleBufferEvents: (editor) ->
     editor.onDidSave =>
       scope = editor.getRootScopeDescriptor().scopes[0]
-      if scope in atom.config.get('clang-format.formatOnSaveScopes')
         @format(editor)
 
 
@@ -51,6 +50,16 @@ class ClangFormat
 
       child.stdin.write(editor.getText())
       child.stdin.end()
+
+
+  shouldFormatOnSaveForScope: (scope) ->
+    if atom.config.get('clang-format.formatCPlusPlusOnSave') and scope in ['source.c++', 'source.cpp']
+      return true
+    if atom.config.get('clang-format.formatCOnSave') and scope in ['source.c']
+      return true
+    if atom.config.get('clang-format.formatObjectiveCOnSave') and scope in ['source.objc', 'source.objcpp']
+      return true
+    return false
 
   getEndJSONPosition: (text) ->
     for i in [0..(text.length-1)]
