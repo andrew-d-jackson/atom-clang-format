@@ -2,7 +2,13 @@ ClangFormat = require './clang-format'
 
 module.exports =
   config:
-    formatOnSave:
+    formatCPlusPlusOnSave:
+      type: 'boolean'
+      default: true
+    formatCOnSave:
+      type: 'boolean'
+      default: true
+    formatObjectiveCOnSave:
       type: 'boolean'
       default: true
     executable:
