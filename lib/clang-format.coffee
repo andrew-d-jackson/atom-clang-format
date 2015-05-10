@@ -20,6 +20,7 @@ class ClangFormat
   handleBufferEvents: (editor) ->
     editor.onDidSave =>
       scope = editor.getRootScopeDescriptor().scopes[0]
+      if @shouldFormatOnSaveForScope scope
         @format(editor)
 
 
