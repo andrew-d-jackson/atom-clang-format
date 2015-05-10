@@ -1,57 +1,67 @@
-exec = require('child_process').exec
-path = require('path')
+{CompositeDisposable} = require 'atom'
+{execSync} = require 'child_process'
 
 module.exports =
 class ClangFormat
   constructor: (state) ->
-    atom.workspace.observeTextEditors (editor) =>
+    @subscriptions = new CompositeDisposable
+    @subscriptions.add atom.workspace.observeTextEditors (editor) =>
       @handleBufferEvents(editor)
 
-    @commands = atom.commands.add 'atom-workspace',
-     'clang-format:format', =>
+    @subscriptions.add atom.commands.add 'atom-workspace',
+      'clang-format:format', =>
         editor = atom.workspace.getActiveTextEditor()
         if editor
           @format(editor)
 
   destroy: ->
-    @commands.dispose()
-    atom.unsubscribe(atom.project)
+    @subscriptions.dispose()
 
   handleBufferEvents: (editor) ->
-    editor.onDidSave =>
+    buffer = editor.getBuffer()
+    bufferSavedSubscription = buffer.onWillSave =>
       scope = editor.getRootScopeDescriptor().scopes[0]
       if @shouldFormatOnSaveForScope scope
-        @format(editor)
+        buffer.transact => @format(editor)
 
+    editorDestroyedSubscription = editor.onDidDestroy =>
+      bufferSavedSubscription.dispose()
+      editorDestroyedSubscription.dispose()
+
+      @subscriptions.remove(bufferSavedSubscription)
+      @subscriptions.remove(editorDestroyedSubscription)
+
+    @subscriptions.add(bufferSavedSubscription)
+    @subscriptions.add(editorDestroyedSubscription)
 
   format: (editor) ->
-    if editor and editor.getPath()
-      exe = atom.config.get('clang-format.executable')
-      style = atom.config.get('clang-format.style')
-      cursor = @getCurrentCursorPosition(editor)
+    buffer = editor.getBuffer()
 
-      command = exe + ' -cursor=' + cursor.toString() +
-                       ' -style=' + style
+    exe = atom.config.get('clang-format.executable')
+    options =
+      style: atom.config.get('clang-format.style')
+      cursor: @getCurrentCursorPosition(editor).toString()
 
-      if (@textSelected(editor))
-        command += ' -lines=' + @getTargetLineNums(editor)
+    # Format only selection
+    if @textSelected(editor)
+      options.lines = @getTargetLineNums(editor)
 
-      file_path = editor.getPath()
-      working_dir = path.dirname(file_path)
-      child = exec command, {cwd: working_dir}, (err, stdout, stderr) =>
-        if err
-          console.log(err)
-          console.log(stdout)
-          console.log(stderr)
-        else
-          editor.setText(@getReturnedFormattedText(stdout))
-          returnedCursorPos = @getReturnedCursorPosition(stdout)
-          convertedCursorPos = editor.getBuffer().positionForCharacterIndex(returnedCursorPos)
-          editor.setCursorBufferPosition(convertedCursorPos)
+    # Pass file path to clang-format so it can look for .clang-format files
+    if file_path = editor.getPath()
+      options['assume-filename'] = file_path
 
-      child.stdin.write(editor.getText())
-      child.stdin.end()
+    # Call clang-format synchronously to ensure that save waits for us
+    # Don't catch errors to make them visible to users via atom's UI
+    args = ("-#{k}=#{v}" for k, v of options).join ' '
+    stdout = execSync("#{exe} #{args}", input: editor.getText()).toString()
 
+    # Update buffer with formatted text. setTextViaDiff minimizes re-rendering
+    buffer.setTextViaDiff @getReturnedFormattedText(stdout)
+
+    # Restore cursor position
+    returnedCursorPos = @getReturnedCursorPosition(stdout)
+    convertedCursorPos = buffer.positionForCharacterIndex(returnedCursorPos)
+    editor.setCursorBufferPosition(convertedCursorPos)
 
   shouldFormatOnSaveForScope: (scope) ->
     if atom.config.get('clang-format.formatCPlusPlusOnSave') and scope in ['source.c++', 'source.cpp']
