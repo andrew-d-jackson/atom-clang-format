@@ -11,6 +11,9 @@ module.exports =
     formatObjectiveCOnSave:
       type: 'boolean'
       default: true
+    formatJavascriptOnSave:
+      type: 'boolean'
+      default: true
     executable:
       type: 'string'
       default: 'clang-format'
