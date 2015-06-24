@@ -52,8 +52,11 @@ class ClangFormat
 
     # Call clang-format synchronously to ensure that save waits for us
     # Don't catch errors to make them visible to users via atom's UI
+    # We need to explicitly ignore stderr since there is no parent stderr on
+    # windows and node.js will try to write to it - whether it's there or not
     args = ("-#{k}=#{v}" for k, v of options).join ' '
-    stdout = execSync("#{exe} #{args}", input: editor.getText()).toString()
+    options = input: editor.getText(), stdio: ['pipe', 'pipe', 'ignore']
+    stdout = execSync("#{exe} #{args}", options).toString()
 
     # Update buffer with formatted text. setTextViaDiff minimizes re-rendering
     buffer.setTextViaDiff @getReturnedFormattedText(stdout)
