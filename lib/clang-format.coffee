@@ -73,6 +73,8 @@ class ClangFormat
       return true
     if atom.config.get('clang-format.formatObjectiveCOnSave') and scope in ['source.objc', 'source.objcpp']
       return true
+    if atom.config.get('clang-format.formatJavascriptOnSave') and scope in ['source.js']
+      return true
     return false
 
   getEndJSONPosition: (text) ->
