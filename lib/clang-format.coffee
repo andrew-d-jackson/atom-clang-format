@@ -54,17 +54,27 @@ class ClangFormat
     # Don't catch errors to make them visible to users via atom's UI
     # We need to explicitly ignore stderr since there is no parent stderr on
     # windows and node.js will try to write to it - whether it's there or not
-    args = ("-#{k}=#{v}" for k, v of options).join ' '
+    args = ("-#{k}=\"#{v}\"" for k, v of options).join ' '
     options = input: editor.getText(), stdio: ['pipe', 'pipe', 'ignore']
-    stdout = execSync("#{exe} #{args}", options).toString()
 
-    # Update buffer with formatted text. setTextViaDiff minimizes re-rendering
-    buffer.setTextViaDiff @getReturnedFormattedText(stdout)
+    try
+      stdout = execSync("#{exe} #{args}", options).toString()
+      # Update buffer with formatted text. setTextViaDiff minimizes re-rendering
+      buffer.setTextViaDiff @getReturnedFormattedText(stdout)
+      # Restore cursor position
+      returnedCursorPos = @getReturnedCursorPosition(stdout)
+      convertedCursorPos = buffer.positionForCharacterIndex(returnedCursorPos)
+      editor.setCursorBufferPosition(convertedCursorPos)
 
-    # Restore cursor position
-    returnedCursorPos = @getReturnedCursorPosition(stdout)
-    convertedCursorPos = buffer.positionForCharacterIndex(returnedCursorPos)
-    editor.setCursorBufferPosition(convertedCursorPos)
+    catch error
+      atom.confirm
+        message: "Something Went Wrong With ClangFormat"
+        detailedMessage: "This error is most often caused by not having
+                          clang-format installed and on your path. If you do
+                          please create an issue on our github page."
+        buttons:
+          Okay: (->)
+
 
   shouldFormatOnSaveForScope: (scope) ->
     if atom.config.get('clang-format.formatCPlusPlusOnSave') and scope in ['source.c++', 'source.cpp']
