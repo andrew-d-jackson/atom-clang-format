@@ -59,21 +59,24 @@ class ClangFormat
 
     try
       stdout = execSync("#{exe} #{args}", options).toString()
-      # Update buffer with formatted text. setTextViaDiff minimizes re-rendering
+        # Update buffer with formatted text. setTextViaDiff minimizes re-rendering
       buffer.setTextViaDiff @getReturnedFormattedText(stdout)
-      # Restore cursor position
+        # Restore cursor position
       returnedCursorPos = @getReturnedCursorPosition(stdout)
       convertedCursorPos = buffer.positionForCharacterIndex(returnedCursorPos)
       editor.setCursorBufferPosition(convertedCursorPos)
 
     catch error
-      atom.confirm
-        message: "Something Went Wrong With ClangFormat"
-        detailedMessage: "This error is most often caused by not having
-                          clang-format installed and on your path. If you do
-                          please create an issue on our github page."
-        buttons:
-          Okay: (->)
+      if error.message.indexOf("Command failed:") < 0
+        throw error
+      else
+        atom.confirm
+          message: "ClangFormat Command Failed"
+          detailedMessage: "This error is most often caused by not having
+                            clang-format installed and on your path. If you do
+                            please create an issue on our github page."
+          buttons:
+            Okay: (->)
 
 
   shouldFormatOnSaveForScope: (scope) ->
