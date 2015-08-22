@@ -14,6 +14,12 @@ class ClangFormat
         if editor
           @format(editor)
 
+    @subscriptions.add atom.commands.add 'atom-workspace',
+      'clang-format:format-at-point', =>
+        editor = atom.workspace.getActiveTextEditor()
+        if editor
+          @format(editor, true)
+
   destroy: ->
     @subscriptions.dispose()
 
@@ -34,7 +40,7 @@ class ClangFormat
     @subscriptions.add(bufferSavedSubscription)
     @subscriptions.add(editorDestroyedSubscription)
 
-  format: (editor) ->
+  format: (editor, at_point=false) ->
     buffer = editor.getBuffer()
 
     exe = atom.config.get('clang-format.executable')
@@ -43,7 +49,7 @@ class ClangFormat
       cursor: @getCurrentCursorPosition(editor).toString()
 
     # Format only selection
-    if @textSelected(editor)
+    if @textSelected(editor) || at_point
       options.lines = @getTargetLineNums(editor)
 
     # Pass file path to clang-format so it can look for .clang-format files

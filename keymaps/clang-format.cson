@@ -1,2 +1,3 @@
 'atom-text-editor':
   'cmd-shift-k': 'clang-format:format'
+  'cmd-shift-i': 'clang-format:format-at-point'
