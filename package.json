@@ -1,7 +1,7 @@
 {
   "name": "pretty-format",
   "main": "./lib/main",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Format your C/C++/Obj-C/Javascript/Python files with clang-format/yapf from inside atom. Requires clang-format/yapf to be installed.",
   "repository": "https://github.com/till-varoquaux/atom-pretty-format.git",
   "license": "MIT"
