@@ -67,6 +67,7 @@ class ClangFormat
     args = ("-#{k}=\"#{v}\"" for k, v of options).join ' '
     return [exe, args]
 
+  # TODO: make pluggable (c.f. atom-linter)
   format: (editor, at_point=false) ->
     buffer = editor.getBuffer()
 
