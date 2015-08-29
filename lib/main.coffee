@@ -1,4 +1,4 @@
-ClangFormat = require './pretty-format'
+ClangFormat = require './prettifier'
 
 module.exports =
   config:

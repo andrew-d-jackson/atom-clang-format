@@ -9,13 +9,13 @@ class ClangFormat
       @handleBufferEvents(editor)
 
     @subscriptions.add atom.commands.add 'atom-workspace',
-      'pretty-format:format', =>
+      'prettifier:format', =>
         editor = atom.workspace.getActiveTextEditor()
         if editor
           @format(editor)
 
     @subscriptions.add atom.commands.add 'atom-workspace',
-      'pretty-format:format-at-point', =>
+      'prettifier:format-at-point', =>
         editor = atom.workspace.getActiveTextEditor()
         if editor
           @format(editor, true)
@@ -41,7 +41,7 @@ class ClangFormat
     @subscriptions.add(editorDestroyedSubscription)
 
   yapfCmd: (editor, at_point) ->
-    exe = atom.config.get('pretty-format.yapfExecutable')
+    exe = atom.config.get('prettifier.yapfExecutable')
 
     options = {}
     if @textSelected(editor) || at_point
@@ -51,9 +51,9 @@ class ClangFormat
 
 
   clangFormatCmd: (editor, at_point) ->
-    exe = atom.config.get('pretty-format.clangFormatExecutable')
+    exe = atom.config.get('prettifier.clangFormatExecutable')
     options =
-      style: atom.config.get('pretty-format.clangFormatStyle')
+      style: atom.config.get('prettifier.clangFormatStyle')
       cursor: @getCurrentCursorPosition(editor).toString()
 
     # Format only selection
@@ -105,13 +105,13 @@ class ClangFormat
 
 
   shouldFormatOnSaveForScope: (scope) ->
-    if atom.config.get('pretty-format.formatCPlusPlusOnSave') and scope in ['source.c++', 'source.cpp']
+    if atom.config.get('prettifier.formatCPlusPlusOnSave') and scope in ['source.c++', 'source.cpp']
       return true
-    if atom.config.get('pretty-format.formatCOnSave') and scope in ['source.c']
+    if atom.config.get('prettifier.formatCOnSave') and scope in ['source.c']
       return true
-    if atom.config.get('pretty-format.formatObjectiveCOnSave') and scope in ['source.objc', 'source.objcpp']
+    if atom.config.get('prettifier.formatObjectiveCOnSave') and scope in ['source.objc', 'source.objcpp']
       return true
-    if atom.config.get('pretty-format.formatJavascriptOnSave') and scope in ['source.js']
+    if atom.config.get('prettifier.formatJavascriptOnSave') and scope in ['source.js']
       return true
     return false
 

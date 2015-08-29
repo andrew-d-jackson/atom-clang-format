@@ -1,5 +1,5 @@
 Copyright (c) 2015 Till Varoquaux
-Based on work atom-pretty-format
+Based on work atom-clang-format
 Copyright (c) 2014 LiquidHelium
 
 Permission is hereby granted, free of charge, to any person obtaining
