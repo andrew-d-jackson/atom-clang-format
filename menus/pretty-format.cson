@@ -1,0 +1,11 @@
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'Pretty Format'
+      'submenu': [
+        { 'label': 'Format', 'command': 'pretty-format:format' }
+      ]
+    ]
+  }
+]

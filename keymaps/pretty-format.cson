@@ -1,0 +1,3 @@
+'atom-text-editor':
+  'cmd-shift-k': 'pretty-format:format'
+  'ctrl-i': 'pretty-format:format-at-point'

@@ -9,13 +9,13 @@ class ClangFormat
       @handleBufferEvents(editor)
 
     @subscriptions.add atom.commands.add 'atom-workspace',
-      'clang-format:format', =>
+      'pretty-format:format', =>
         editor = atom.workspace.getActiveTextEditor()
         if editor
           @format(editor)
 
     @subscriptions.add atom.commands.add 'atom-workspace',
-      'clang-format:format-at-point', =>
+      'pretty-format:format-at-point', =>
         editor = atom.workspace.getActiveTextEditor()
         if editor
           @format(editor, true)
@@ -43,9 +43,9 @@ class ClangFormat
   format: (editor, at_point=false) ->
     buffer = editor.getBuffer()
 
-    exe = atom.config.get('clang-format.executable')
+    exe = atom.config.get('pretty-format.clangFormatExecutable')
     options =
-      style: atom.config.get('clang-format.style')
+      style: atom.config.get('pretty-format.clangFormatStyle')
       cursor: @getCurrentCursorPosition(editor).toString()
 
     # Format only selection
@@ -79,20 +79,20 @@ class ClangFormat
         atom.confirm
           message: "ClangFormat Command Failed"
           detailedMessage: "This error is most often caused by not having
-                            clang-format installed and on your path. If you do
+                            #{exe} installed and on your path. If you do
                             please create an issue on our github page."
           buttons:
             Okay: (->)
 
 
   shouldFormatOnSaveForScope: (scope) ->
-    if atom.config.get('clang-format.formatCPlusPlusOnSave') and scope in ['source.c++', 'source.cpp']
+    if atom.config.get('pretty-format.formatCPlusPlusOnSave') and scope in ['source.c++', 'source.cpp']
       return true
-    if atom.config.get('clang-format.formatCOnSave') and scope in ['source.c']
+    if atom.config.get('pretty-format.formatCOnSave') and scope in ['source.c']
       return true
-    if atom.config.get('clang-format.formatObjectiveCOnSave') and scope in ['source.objc', 'source.objcpp']
+    if atom.config.get('pretty-format.formatObjectiveCOnSave') and scope in ['source.objc', 'source.objcpp']
       return true
-    if atom.config.get('clang-format.formatJavascriptOnSave') and scope in ['source.js']
+    if atom.config.get('pretty-format.formatJavascriptOnSave') and scope in ['source.js']
       return true
     return false
 

@@ -1,23 +1,23 @@
-ClangFormat = require './clang-format'
+ClangFormat = require './pretty-format'
 
 module.exports =
   config:
     formatCPlusPlusOnSave:
       type: 'boolean'
-      default: true
+      default: false
     formatCOnSave:
       type: 'boolean'
-      default: true
+      default: false
     formatObjectiveCOnSave:
       type: 'boolean'
-      default: true
+      default: false
     formatJavascriptOnSave:
       type: 'boolean'
-      default: true
-    executable:
+      default: false
+    clangFormatExecutable:
       type: 'string'
       default: 'clang-format'
-    style:
+    clangFormatStyle:
       type: 'string'
       default: 'file'
 
