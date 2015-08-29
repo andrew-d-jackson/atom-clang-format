@@ -40,9 +40,17 @@ class ClangFormat
     @subscriptions.add(bufferSavedSubscription)
     @subscriptions.add(editorDestroyedSubscription)
 
-  format: (editor, at_point=false) ->
-    buffer = editor.getBuffer()
+  yapfCmd: (editor, at_point) ->
+    exe = atom.config.get('pretty-format.yapfExecutable')
 
+    options = {}
+    if @textSelected(editor) || at_point
+      options.lines = @getTargetLineNums(editor, '-')
+    args = ("--#{k}=\"#{v}\"" for k, v of options).join ' '
+    return [exe, args]
+
+
+  clangFormatCmd: (editor, at_point) ->
     exe = atom.config.get('pretty-format.clangFormatExecutable')
     options =
       style: atom.config.get('pretty-format.clangFormatStyle')
@@ -56,11 +64,22 @@ class ClangFormat
     if file_path = editor.getPath()
       options['assume-filename'] = file_path
 
+    args = ("-#{k}=\"#{v}\"" for k, v of options).join ' '
+    return [exe, args]
+
+  format: (editor, at_point=false) ->
+    buffer = editor.getBuffer()
+
+    scope = editor.getRootScopeDescriptor().scopes[0]
+    if scope = 'source.python'
+      [exe, args] = @yapfCmd(editor, at_point)
+    else:
+      [exe, args] = @clangFormatCmd(editor, at_point)
+
     # Call clang-format synchronously to ensure that save waits for us
     # Don't catch errors to make them visible to users via atom's UI
     # We need to explicitly ignore stderr since there is no parent stderr on
     # windows and node.js will try to write to it - whether it's there or not
-    args = ("-#{k}=\"#{v}\"" for k, v of options).join ' '
     options = input: editor.getText(), stdio: ['pipe', 'pipe', 'ignore']
 
     try
@@ -133,10 +152,10 @@ class ClangFormat
     return [starting_row, ending_row]
 
   # Returns line numbers recognizable by clang-format, i.e. '<begin>:<end>'.
-  getTargetLineNums: (editor) ->
+  getTargetLineNums: (editor, sep=':') ->
     if (@textSelected(editor))
       line_nums = @getSelectedLineNums(editor)
-      return line_nums[0] + ':' + line_nums[1]
+      return line_nums[0] + sep + line_nums[1]
 
     line_num = @getCursorLineNumber(editor)
-    return line_num + ':' + line_num
+    return line_num + sep + line_num
