@@ -1,7 +1,7 @@
 {
   "name": "prettifier",
   "main": "./lib/main",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Format your C/C++/Obj-C/Javascript/Python files with clang-format/yapf from inside atom. Requires clang-format/yapf to be installed.",
   "repository": "https://github.com/till-varoquaux/atom-prettifier.git",
   "license": "MIT"
