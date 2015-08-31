@@ -1,4 +1,4 @@
-ClangFormat = require './prettifier'
+Prettifier = require './prettifier'
 
 module.exports =
   config:
@@ -22,7 +22,7 @@ module.exports =
       default: 'file'
 
   activate: ->
-    @clangFormat = new ClangFormat()
+    @prettifier = new Prettifier()
 
   deactivate: ->
-    @clangFormat.destroy()
+    @prettifier.destroy()

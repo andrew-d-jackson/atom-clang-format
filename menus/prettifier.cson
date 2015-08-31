@@ -1,11 +1,12 @@
-'menu': [
-  {
-    'label': 'Packages'
-    'submenu': [
-      'label': 'Pretty Format'
-      'submenu': [
-        { 'label': 'Format', 'command': 'prettifier:format' }
-      ]
-    ]
-  }
+'menu' :[
+    {
+      'label' : 'Packages' 'submenu' : [
+                'label':'Prettifier'
+              'submenu':[
+                  {'label' : 'Format buffer', 'command' : 'prettifier:format'} {
+                      'label' : 'Format selection',
+                      'command' : 'prettifier:format-at-point'
+                  }
+              ]]
+    }
 ]
