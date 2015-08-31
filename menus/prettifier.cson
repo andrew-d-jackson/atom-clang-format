@@ -1,12 +1,18 @@
 'menu' :[
     {
-      'label' : 'Packages' 'submenu' : [
-                'label':'Prettifier'
+      'label' : 'Packages'
+      'submenu' : [
+              'label':'Prettifier'
               'submenu':[
-                  {'label' : 'Format buffer', 'command' : 'prettifier:format'} {
+                  {
+                      'label' : 'Format buffer',
+                      'command' : 'prettifier:format'
+                  }
+                  {
                       'label' : 'Format selection',
                       'command' : 'prettifier:format-at-point'
                   }
-              ]]
+              ]
+      ]
     }
 ]
