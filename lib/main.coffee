@@ -10,10 +10,10 @@ module.exports =
       default: true
     formatObjectiveCOnSave:
       type: 'boolean'
-      default: true
+      default: false
     formatJavascriptOnSave:
       type: 'boolean'
-      default: true
+      default: false
     executable:
       type: 'string'
       default: 'clang-format'
