@@ -1,5 +1,6 @@
 {CompositeDisposable} = require 'atom'
 {execSync} = require 'child_process'
+path = require 'path'
 
 module.exports =
 class ClangFormat
@@ -56,6 +57,9 @@ class ClangFormat
     # windows and node.js will try to write to it - whether it's there or not
     args = ("-#{k}=\"#{v}\"" for k, v of options).join ' '
     options = input: editor.getText(), stdio: ['pipe', 'pipe', 'ignore']
+
+    if file_path = editor.getPath()
+      options['cwd'] = path.dirname(file_path)
 
     try
       stdout = execSync("#{exe} #{args}", options).toString()
