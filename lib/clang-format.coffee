@@ -1,6 +1,8 @@
 {CompositeDisposable} = require 'atom'
 {execSync} = require 'child_process'
+os = require 'os';
 path = require 'path'
+clangFormatExecutables = require 'clang-format'
 
 module.exports =
 class ClangFormat
@@ -39,6 +41,13 @@ class ClangFormat
     buffer = editor.getBuffer()
 
     exe = atom.config.get('clang-format.executable')
+    if not exe
+      exePackageLocation = path.dirname clangFormatExecutables.location
+      if os.platform() == 'win32'
+        exe = exePackageLocation + '/bin/win32/clang-format.exe';
+      else
+        exe = exePackageLocation + '/bin/' + os.platform() + "_" + os.arch() + '/clang-format';
+
     options =
       style: atom.config.get('clang-format.style')
       cursor: @getCurrentCursorPosition(editor).toString()

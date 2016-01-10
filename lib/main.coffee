@@ -16,7 +16,7 @@ module.exports =
       default: false
     executable:
       type: 'string'
-      default: 'clang-format'
+      default: ''
     style:
       type: 'string'
       default: 'file'
