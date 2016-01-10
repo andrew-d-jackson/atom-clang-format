@@ -7,6 +7,6 @@
   "repository": "https://github.com/LiquidHelium/atom-clang-format",
   "license": "MIT",
   "dependencies": {
-    "clang-format": "angular/clang-format"
+    "clang-format": "github:angular/clang-format"
   }
 }
