@@ -51,6 +51,7 @@ class ClangFormat
     options =
       style: atom.config.get('clang-format.style')
       cursor: @getCurrentCursorPosition(editor).toString()
+      'fallback-style': atom.config.get('clang-format.fallbackStyle')
 
     # Format only selection
     if @textSelected(editor)

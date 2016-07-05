@@ -20,6 +20,9 @@ module.exports =
     style:
       type: 'string'
       default: 'file'
+    fallbackStyle:
+      type: 'string'
+      default: 'none'
 
   activate: ->
     @clangFormat = new ClangFormat()
