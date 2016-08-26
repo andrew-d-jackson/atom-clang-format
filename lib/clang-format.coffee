@@ -57,8 +57,12 @@ class ClangFormat
     if @textSelected(editor)
       options.lines = @getTargetLineNums(editor)
 
-    # Pass file path to clang-format so it can look for .clang-format files
+    # Pass file path to clang-format so it can look for .clang-format files,
+    # modified if needed
     if file_path = editor.getPath()
+      replacements = JSON.parse(atom.config.get('clang-format.replaceExtensions'))
+      for [bad, good] in replacements
+        file_path = file_path.replace(new RegExp(bad + '$'), good)
       options['assume-filename'] = file_path
 
     # Call clang-format synchronously to ensure that save waits for us
@@ -66,6 +70,7 @@ class ClangFormat
     # We need to explicitly ignore stderr since there is no parent stderr on
     # windows and node.js will try to write to it - whether it's there or not
     args = ("-#{k}=\"#{v}\"" for k, v of options).join ' '
+    console.log("ARGS TO CLANG-FORMAT:", args)
     options = input: editor.getText(), stdio: ['pipe', 'pipe', 'ignore']
 
     if file_path = editor.getPath()
