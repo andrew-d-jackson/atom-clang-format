@@ -40,7 +40,7 @@ module.exports =
       default: '[[]]'
       description: 'In order to call clang-format on files with non-standard
                     extensions, provide an array of 2-string arrays. Example:
-                    `[["cu","c"], ["md", "js"]]` to treat CUDA `.cu` files as
+                    `[["cu", "c"], ["md", "js"]]` to treat CUDA `.cu` files as
                     C files and Markdown files as JavaScript files.'
 
   activate: ->
