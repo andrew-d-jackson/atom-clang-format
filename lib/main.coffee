@@ -37,7 +37,7 @@ module.exports =
       description: 'Default "none" together with style "file" ensures that if no ".clang-format" file exists, no reformatting takes place.'
     replaceExtensions:
       type: 'string'
-      default: '[[]]'
+      default: '[]'
       description: 'In order to call clang-format on files with non-standard
                     extensions, provide an array of 2-string arrays. Example:
                     `[["cu", "c"], ["md", "js"]]` to treat CUDA `.cu` files as
