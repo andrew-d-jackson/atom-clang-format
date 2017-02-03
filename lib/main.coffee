@@ -33,8 +33,8 @@ module.exports =
       description: 'Default "file" uses the file ".clang-format" in one of the parent directories of the source file.'
     fallbackStyle:
       type: 'string'
-      default: 'none'
-      description: 'Default "none" together with style "file" ensures that if no ".clang-format" file exists, no reformatting takes place.'
+      default: 'llvm'
+      description: 'Fallback Style. Set To "none" together with style "file" to ensure that if no ".clang-format" file exists, no reformatting takes place.'
 
   activate: ->
     @clangFormat = new ClangFormat()
