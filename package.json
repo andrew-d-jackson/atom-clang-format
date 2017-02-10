@@ -1,7 +1,7 @@
 {
   "name": "clang-format",
   "main": "./lib/main",
-  "version": "1.27.0",
+  "version": "1.28.0",
   "private": true,
   "description": "Format your C/C++/Obj-C/Javascript files with clang-format from inside atom. Requires clang-format to be installed.",
   "repository": "https://github.com/LiquidHelium/atom-clang-format",
