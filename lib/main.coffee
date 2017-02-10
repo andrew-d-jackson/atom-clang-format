@@ -4,12 +4,12 @@ module.exports =
   config:
     formatCPlusPlusOnSave:
       type: 'boolean'
-      default: true
+      default: false
       title: 'Format C++ on save'
       order: 1
     formatCOnSave:
       type: 'boolean'
-      default: true
+      default: false
       title: 'Format C on save'
       order: 2
     formatObjectiveCOnSave:
@@ -22,14 +22,19 @@ module.exports =
       default: false
       title: 'Format JavaScript on save'
       order: 4
+    formatJavaOnSave:
+      type: 'boolean'
+      default: false
+      title: 'Format Java on save'
+      order: 5
     executable:
       type: 'string'
       default: ''
-      order: 5
+      order: 6
     style:
       type: 'string'
       default: 'file'
-      order: 6
+      order: 7
       description: 'Default "file" uses the file ".clang-format" in one of the parent directories of the source file.'
     fallbackStyle:
       type: 'string'
