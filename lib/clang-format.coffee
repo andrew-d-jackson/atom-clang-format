@@ -113,6 +113,7 @@ class ClangFormat
     return -1
 
   getReturnedCursorPosition: (stdout) ->
+    return 0 unless stdout
     parsed = JSON.parse stdout.slice(0, @getEndJSONPosition(stdout))
     return parsed.Cursor
 
