@@ -72,7 +72,7 @@ class ClangFormat
       options['cwd'] = path.dirname(file_path)
 
     try
-      stdout = execSync("#{exe} #{args}", options).toString()
+      stdout = execSync("\"#{exe}\" #{args}", options).toString()
         # Update buffer with formatted text. setTextViaDiff minimizes re-rendering
       buffer.setTextViaDiff @getReturnedFormattedText(stdout)
         # Restore cursor position
