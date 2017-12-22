@@ -22,19 +22,24 @@ module.exports =
       default: false
       title: 'Format JavaScript on save'
       order: 4
+    formatTypescriptOnSave:
+      type: 'boolean'
+      default: false
+      title: 'Format TypeScript on save'
+      order: 5
     formatJavaOnSave:
       type: 'boolean'
       default: false
       title: 'Format Java on save'
-      order: 5
+      order: 6
     executable:
       type: 'string'
       default: ''
-      order: 6
+      order: 7
     style:
       type: 'string'
       default: 'file'
-      order: 7
+      order: 8
       description: 'Default "file" uses the file ".clang-format" in one of the parent directories of the source file.'
     fallbackStyle:
       type: 'string'
