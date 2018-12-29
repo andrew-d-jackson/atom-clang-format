@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "eslint .",
     "test": "atom --test .",
-    "release": "semantic-release --ci"
+    "release": "semantic-release --ci --debug"
   },
   "dependencies": {
     "clang-format": "github:angular/clang-format"
