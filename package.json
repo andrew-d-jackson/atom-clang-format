@@ -8,15 +8,18 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint .",
-    "test": "atom --test ."
+    "test": "atom --test .",
+    "release": "semantic-release"
   },
   "dependencies": {
     "clang-format": "github:angular/clang-format"
   },
   "devDependencies": {
+    "@semantic-release/apm": "^1.0.1",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.3.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.14.0"
+    "eslint-plugin-import": "^2.14.0",
+    "semantic-release": "^15.13.2"
   }
 }
