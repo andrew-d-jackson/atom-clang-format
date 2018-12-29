@@ -6,7 +6,17 @@
   "description": "Format your C/C++/Obj-C/Javascript files with clang-format from inside atom. Requires clang-format to be installed.",
   "repository": "https://github.com/LiquidHelium/atom-clang-format",
   "license": "MIT",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "atom --test ."
+  },
   "dependencies": {
     "clang-format": "github:angular/clang-format"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
   }
 }
