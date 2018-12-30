@@ -12,7 +12,7 @@
     "release": "semantic-release --ci --debug"
   },
   "dependencies": {
-    "clang-format": "github:angular/clang-format"
+    "clang-format-binaries": "^0.0.1"
   },
   "devDependencies": {
     "@semantic-release/apm": "^1.0.1",
