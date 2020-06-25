@@ -1,2 +1,5 @@
-'atom-text-editor':
+'.platform-darwin atom-text-editor':
   'cmd-shift-k': 'clang-format:format'
+
+'.platform-linux atom-text-editor, .platform-windows atom-text-editor':
+  'ctrl-shift-k': 'clang-format:format'
