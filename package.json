@@ -12,7 +12,7 @@
     "release": "semantic-release --ci --debug"
   },
   "dependencies": {
-    "clang-format-binaries": "^0.0.1"
+    "clang-format": "^1.4.0"
   },
   "devDependencies": {
     "@semantic-release/apm": "^1.0.1",
